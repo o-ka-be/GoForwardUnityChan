@@ -16,6 +16,9 @@ public class UnityChanController : MonoBehaviour
     // ジャンプの速度
     float jumpVelocity = 20;
 
+    //ゲームオーバーになる位置
+    private float deadLine = -9;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,16 +43,26 @@ public class UnityChanController : MonoBehaviour
         if (Mouse.current.leftButton.isPressed && isGround)
         {
             // 上方向の力をかける
-            this.rigid2D.linearVelocity = new Vector2 (0, this.jumpVelocity);
+            this.rigid2D.linearVelocity = new Vector2(0, this.jumpVelocity);
         }
 
         // クリックをやめたら上方向への速度を減速する
-        if (!Mouse.current.leftButton.isPressed == false)
+        if (Mouse.current.leftButton.isPressed == false)
         {
             if (this.rigid2D.linearVelocity.y > 0)
             {
                 this.rigid2D.linearVelocity *= this.dump;
             }
+        }
+
+        //デッドラインを超えた場合ゲームオーバーにする
+        if (transform.position.x < this.deadLine)
+        {
+            //UIControllerのGameOver関数を呼び出して画面上に「GameOver」と表示する
+            GameObject.Find("Canvas").GetComponent<UIController>().GameOver();
+
+            //unityちゃんを破棄する
+            Destroy(gameObject);
         }
     }
 }
